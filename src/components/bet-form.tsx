@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from "uuid";
 
 interface BetFormProps {
@@ -43,7 +42,6 @@ export function BetForm({ user }: BetFormProps) {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const supabase = createClientComponentClient();
 
   const createBet = useMutation({
     mutationFn: async (data: BetFormData) => {

@@ -1,17 +1,11 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // Used for migrations
-}
-
 generator client {
   provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Organization {
@@ -27,25 +21,25 @@ model User {
   id             String       @id @default(uuid())
   name           String
   email          String       @unique
-  role           String
+  role           String       @default("user")
   organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   active         Boolean      @default(true)
-  moneyRoles     MoneyRole[]
   bets           Bet[]
+  moneyRoles     MoneyRole[]
+  organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model MoneyRole {
   id        String   @id @default(uuid())
   name      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   active    Boolean  @default(true)
   bets      Bet[]
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Bet {
@@ -58,10 +52,10 @@ model Bet {
   stake        Decimal
   statusResult String     @default("Pending")
   userId       String
-  user         User       @relation(fields: [userId], references: [id])
   moneyRoleId  String?
-  moneyRole    MoneyRole? @relation(fields: [moneyRoleId], references: [id])
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   active       Boolean    @default(true)
+  moneyRole    MoneyRole? @relation(fields: [moneyRoleId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
 }

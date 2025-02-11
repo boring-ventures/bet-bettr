@@ -15,6 +15,32 @@ export function AuthForm() {
   const { toast } = useToast()
   const supabase = createClientComponentClient();
 
+  const createOrGetUser = async (supabaseUserId: string, userEmail: string) => {
+    try {
+      // First try to get the existing user
+      const response = await fetch('/api/users/get-or-create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: supabaseUserId,
+          email: userEmail,
+          name: userEmail.split('@')[0], // Using email prefix as default name
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create/get user');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in createOrGetUser:', error);
+      throw error;
+    }
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -68,21 +94,32 @@ export function AuthForm() {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      })
-    } else {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Create or get Prisma user record after successful authentication
+      if (data.user) {
+        await createOrGetUser(data.user.id, data.user.email!);
+      }
+
       router.refresh(); // Refresh the current route
       router.push("/dashboard");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false)
   }
 
   return (

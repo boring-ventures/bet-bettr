@@ -1,17 +1,16 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface Bet {
   id: string
-  odds: number
+  odds: number | string
   market: string
   bettingHouse: string
   type: string
   sport: string
-  stake: number
+  stake: number | string
   statusResult: string
   userId: string
   createdAt: string
@@ -19,28 +18,29 @@ interface Bet {
   active: boolean
 }
 
-export function BetHistory() {
-  const supabase = createClientComponentClient();
+interface BetHistoryProps {
+  initialBets: Bet[]
+  user: {
+    id: string
+    // ... other user fields
+  }
+}
 
+export function BetHistory({ initialBets, user }: BetHistoryProps) {
   const {
     data: bets,
     isLoading,
     error,
   } = useQuery<Bet[]>({
-    queryKey: ["bets"],
+    queryKey: ["bets", user.id],
     queryFn: async () => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error("User not found");
-
-      const { data, error } = await supabase
-        .from("Bet")
-        .select("*")
-        .eq("userId", user.user.id)
-        .order("createdAt", { ascending: false });
-
-      if (error) throw error;
-      return data;
+      const response = await fetch(`/api/bets?userId=${user.id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch bets");
+      }
+      return response.json();
     },
+    initialData: initialBets,
   });
 
   if (isLoading) {
@@ -55,6 +55,11 @@ export function BetHistory() {
     return <div>No bets found</div>;
   }
 
+  const formatNumber = (value: number | string) => {
+    const num = typeof value === 'string' ? parseFloat(value) : value;
+    return isNaN(num) ? '0.00' : num.toFixed(2);
+  };
+
   return (
     <div className="space-y-4">
       {bets.map((bet) => (
@@ -67,11 +72,11 @@ export function BetHistory() {
               </div>
               <div>
                 <p className="font-semibold">Odds</p>
-                <p>{bet.odds.toFixed(2)}</p>
+                <p>{formatNumber(bet.odds)}</p>
               </div>
               <div>
                 <p className="font-semibold">Stake</p>
-                <p>{bet.stake.toFixed(2)}</p>
+                <p>{formatNumber(bet.stake)}</p>
               </div>
               <div>
                 <p className="font-semibold">Status</p>

@@ -12,7 +12,17 @@ import { useToast } from "@/hooks/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { v4 as uuidv4 } from "uuid";
 
-export function BetForm() {
+interface BetFormProps {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    organizationId: string;
+    // ... other user fields
+  };
+}
+
+export function BetForm({ user }: BetFormProps) {
   const {
     register,
     control,
@@ -30,36 +40,39 @@ export function BetForm() {
       stake: 0,
     },
   });
-  const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const supabase = createClientComponentClient();
 
   const createBet = useMutation({
     mutationFn: async (data: BetFormData) => {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error("User not found");
-
       const newBet = {
         id: uuidv4(),
         ...data,
-        userId: user.user.id,
+        userId: user.id,
         statusResult: "Pending",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         active: true,
       };
 
-      const { data: bet, error } = await supabase
-        .from("Bet")
-        .insert(newBet)
-        .single();
+      const response = await fetch("/api/bets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBet),
+      });
 
-      if (error) throw error;
-      return bet;
+      if (!response.ok) {
+        throw new Error("Failed to create bet");
+      }
+
+      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bets"] });
+      queryClient.invalidateQueries({ queryKey: ["bets", user.id] });
       toast({ title: "Bet created successfully" });
       reset();
     },

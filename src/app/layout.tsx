@@ -2,6 +2,7 @@ import { Inter } from "next/font/google"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { QueryClientProvider } from "@/components/query-client-provider"
+import { AuthProvider } from "@/components/providers"
 import "./globals.css"
 import type React from "react" // Added import for React
 
@@ -28,10 +29,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryClientProvider>
-            {children}
-            <Toaster />
-          </QueryClientProvider>
+          <AuthProvider>
+            <QueryClientProvider>
+              {children}
+              <Toaster />
+            </QueryClientProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -49,19 +49,19 @@ model MoneyRole {
 }
 
 model Bet {
-  id           String    @id @default(uuid())
+  id           String     @id @default(uuid())
   odds         Decimal
   market       String
   bettingHouse String
   type         String
   sport        String
   stake        Decimal
-  statusResult String    @default("Pending")
+  statusResult String     @default("Pending")
   userId       String
-  user         User      @relation(fields: [userId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
   moneyRoleId  String?
   moneyRole    MoneyRole? @relation(fields: [moneyRoleId], references: [id])
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  active       Boolean   @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  active       Boolean    @default(true)
 }

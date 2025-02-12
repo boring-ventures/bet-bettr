@@ -45,7 +45,6 @@ export async function POST(request: Request) {
   try {
     const betData = await request.json();
     
-    // Convert string numbers to Prisma Decimal
     const bet = {
       ...betData,
       odds: new Prisma.Decimal(betData.odds),
@@ -56,21 +55,45 @@ export async function POST(request: Request) {
       data: bet,
     });
 
-    // Convert Decimal to number for response
-    const serializedBet = {
+    return NextResponse.json({
       ...newBet,
       odds: Number(newBet.odds),
       stake: Number(newBet.stake),
-    };
-
-    return NextResponse.json(serializedBet);
+    });
   } catch (error) {
     console.error("Error creating bet:", error);
     return NextResponse.json(
       { error: "Failed to create bet" },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const betData = await request.json();
+    
+    const bet = {
+      ...betData,
+      odds: new Prisma.Decimal(betData.odds),
+      stake: new Prisma.Decimal(betData.stake),
+    };
+
+    const updatedBet = await prisma.bet.update({
+      where: { id: bet.id },
+      data: bet,
+    });
+
+    return NextResponse.json({
+      ...updatedBet,
+      odds: Number(updatedBet.odds),
+      stake: Number(updatedBet.stake),
+    });
+  } catch (error) {
+    console.error("Error updating bet:", error);
+    return NextResponse.json(
+      { error: "Failed to update bet" },
+      { status: 500 }
+    );
   }
 } 

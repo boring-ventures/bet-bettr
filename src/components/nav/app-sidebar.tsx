@@ -9,10 +9,9 @@ import {
   Settings,
   Wallet,
   ChevronDown,
-  List,
   LucideIcon,
+  Volleyball,
 } from "lucide-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -26,6 +25,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav/nav-user";
+import { Header } from "../dashboard/Header";
 
 interface AppSidebarProps {
   children: React.ReactNode;
@@ -58,19 +58,8 @@ const navItems: NavItem[] = [
   },
   {
     title: "Bets",
+    url: "/dashboard/bets",
     icon: History,
-    items: [
-      {
-        title: "Add New Bet",
-        url: "/dashboard/bets/new",
-        icon: List,
-      },
-      {
-        title: "Bet History",
-        url: "/dashboard/bets",
-        icon: History,
-      },
-    ],
   },
   {
     title: "Money Roles",
@@ -115,20 +104,14 @@ export function AppSidebar({ user, children, ...props }: AppSidebarProps) {
 
   return (
     <>
-      <Sidebar variant="inset" {...props}>
-        <SidebarHeader className="p-3">
+      <Sidebar className="bg-muted border-r" variant="inset" {...props}>
+        <SidebarHeader className="p-3 border-b">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton size="lg" asChild>
                 <a href="/dashboard" className="flex items-center gap-2">
                   <div className="flex h-8 w-8 items-center justify-center rounded-md">
-                    <Image
-                      src="/images/logo.svg"
-                      alt="Logo"
-                      width={50}
-                      height={50}
-                      className="text-primary-foreground"
-                    />
+                    <Volleyball />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">Bet Tracker</span>
@@ -220,14 +203,13 @@ export function AppSidebar({ user, children, ...props }: AppSidebarProps) {
           </SidebarMenu>
         </SidebarContent>
 
-        <SidebarFooter>
+        <SidebarFooter className="border-t">
           <NavUser user={user} />
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <main className="flex-1 p-6">
-          {children}
-        </main>
+        <Header />
+        <main className="flex-1 p-6 bg-background">{children}</main>
       </SidebarInset>
     </>
   );

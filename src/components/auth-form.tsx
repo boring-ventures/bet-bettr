@@ -3,9 +3,20 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+function LoadingSpinner() {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+    </div>
+  );
+}
 
 export function AuthForm() {
   const [email, setEmail] = useState("")
@@ -123,30 +134,56 @@ export function AuthForm() {
   }
 
   return (
-    <form className="space-y-4">
-      <Input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-      />
-      <Input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <div className="space-x-2">
-        <Button type="button" onClick={handleSignUp} disabled={loading}>
-          Sign Up
-        </Button>
-        <Button type="submit" onClick={handleSignIn} disabled={loading}>
-          Sign In
-        </Button>
-      </div>
-    </form>
+    <Card className="w-full max-w-md mx-auto bg-card relative">
+      {loading && <LoadingSpinner />}
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-center text-card-foreground">
+          Welcome to Bet Tracker
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form className="space-y-4">
+          <div className="space-y-2">
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="bg-muted text-foreground border-input focus:ring-ring"
+            />
+          </div>
+          <div className="space-y-2">
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="bg-muted text-foreground border-input focus:ring-ring"
+            />
+          </div>
+          <div className="flex gap-2 pt-2">
+            <Button
+              type="button"
+              onClick={handleSignUp}
+              disabled={loading}
+              className="flex-1 bg-secondary text-secondary-foreground hover:bg-secondary/90"
+            >
+              Sign Up
+            </Button>
+            <Button
+              type="submit"
+              onClick={handleSignIn}
+              disabled={loading}
+              className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              Sign In
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 

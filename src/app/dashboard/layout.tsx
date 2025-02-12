@@ -32,7 +32,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-background">
       <SidebarProvider>
         <AppSidebar user={user}>{children}</AppSidebar>
       </SidebarProvider>

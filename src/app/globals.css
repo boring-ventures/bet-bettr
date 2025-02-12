@@ -12,6 +12,7 @@ body {
   }
 }
 
+/* Custom color palette */
 @layer base {
   :root {
     /* Name: custom color palette
@@ -49,6 +50,24 @@ body {
     --destructive-foreground: 159 10% 97.5%;
 
     --ring: 159 100% 50%;
+  }
+}
+
+@layer base {
+  :root {
+    --chart-1: 159 100% 50%;
+    --chart-2: 159 50% 15%;
+    --chart-3: 159 45% 6.5%;
+    --chart-4: 159 50% 15%;
+    --chart-5: 159 100% 50%;
+  }
+ 
+  .dark {
+    --chart-1: 159 100% 50%;
+    --chart-2: 159 50% 15%;
+    --chart-3: 159 45% 6.5%;
+    --chart-4: 159 50% 15%;
+    --chart-5: 159 100% 50%;
   }
 }
 

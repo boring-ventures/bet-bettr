@@ -2,11 +2,11 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
-import { BetsTable } from "@/components/bets/bets-table";
+import { MoneyRolesTable } from "@/components/money-roles/money-roles-table";
 
 const prisma = new PrismaClient();
 
-export default async function BetsPage() {
+export default async function MoneyRolesPage() {
   const supabase = createServerComponentClient({ cookies });
 
   const {
@@ -21,7 +21,7 @@ export default async function BetsPage() {
     where: { email: session.user.email! },
     include: {
       organization: true,
-      bets: {
+      moneyRoles: {
         orderBy: {
           createdAt: "desc",
         },
@@ -36,7 +36,6 @@ export default async function BetsPage() {
     redirect("/login");
   }
 
-  // Create a serializable version of the user without Decimal types
   const serializedUser = {
     id: user.id,
     email: user.email,
@@ -44,26 +43,18 @@ export default async function BetsPage() {
     organizationId: user.organizationId,
   };
 
-  // Serialize the bets separately, converting Decimal to number
-  const serializedBets = user.bets.map((bet) => ({
-    id: bet.id,
-    odds: Number(bet.odds),
-    market: bet.market,
-    bettingHouse: bet.bettingHouse,
-    type: bet.type,
-    sport: bet.sport,
-    stake: Number(bet.stake),
-    statusResult: bet.statusResult as "Pending" | "Win" | "Lose",
-    userId: bet.userId,
-    moneyRoleId: bet.moneyRoleId || undefined,
-    createdAt: bet.createdAt.toISOString(),
-    updatedAt: bet.updatedAt.toISOString(),
-    active: bet.active,
+  const serializedMoneyRoles = user.moneyRoles.map((role) => ({
+    id: role.id,
+    name: role.name,
+    userId: role.userId,
+    createdAt: role.createdAt.toISOString(),
+    updatedAt: role.updatedAt.toISOString(),
+    active: role.active,
   }));
 
   return (
     <div className="space-y-4">
-      <BetsTable bets={serializedBets} user={serializedUser} />
+      <MoneyRolesTable moneyRoles={serializedMoneyRoles} user={serializedUser} />
     </div>
   );
-}
+} 

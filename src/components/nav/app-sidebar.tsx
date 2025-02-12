@@ -4,7 +4,6 @@ import * as React from "react";
 import {
   LayoutDashboard,
   History,
-  TrendingUp,
   Users,
   Settings,
   Wallet,
@@ -65,11 +64,6 @@ const navItems: NavItem[] = [
     title: "Money Roles",
     url: "/dashboard/money-roles",
     icon: Wallet,
-  },
-  {
-    title: "Analytics",
-    url: "/dashboard/analytics",
-    icon: TrendingUp,
   },
 ];
 

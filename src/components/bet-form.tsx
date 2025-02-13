@@ -17,7 +17,6 @@ interface BetFormProps {
     email: string;
     name: string;
     organizationId: string;
-    // ... other user fields
   };
 }
 

@@ -20,7 +20,6 @@ interface BetStatusModalProps {
 export function BetStatusModal({
   open,
   onOpenChange,
-  bet,
   onStatusUpdate,
 }: BetStatusModalProps) {
   const [isUpdating, setIsUpdating] = useState(false);

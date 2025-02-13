@@ -86,9 +86,11 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       throw new Error("Failed to update bet status");
     }
 
-    // Invalidate and refetch queries
-    await queryClient.invalidateQueries({ queryKey: ["analytics"] });
-   
+    // Invalidate both analytics and bets queries
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["analytics"] }),
+      queryClient.invalidateQueries({ queryKey: ["bets"] })
+    ]);
   };
 
   const columns: Column<Bet>[] = [
@@ -137,16 +139,23 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       accessorKey: "statusResult",
       cell: ({ row }) => (
         <span
-          className={`cursor-pointer ${
-            row.statusResult === "Win"
-              ? "text-green-500"
-              : row.statusResult === "Lose"
-              ? "text-red-500"
-              : row.statusResult === "Push"
-              ? "text-yellow-500"
-              : "text-yellow-500"
-          }`}
+          className={`
+            px-2 py-1 rounded-md font-medium text-sm
+            cursor-pointer transition-colors
+            hover:opacity-80 
+            ${
+              row.statusResult === "Win"
+                ? "bg-green-100 text-green-700"
+                : row.statusResult === "Lose"
+                ? "bg-red-100 text-red-700"
+                : row.statusResult === "Push"
+                ? "bg-yellow-100 text-yellow-700"
+                : "bg-blue-100 text-blue-700"
+            }
+            ${row.statusResult === "Pending" ? "hover:bg-blue-200" : ""}
+          `}
           onClick={() => handleStatusClick(row)}
+          title={row.statusResult === "Pending" ? "Click to update status" : undefined}
         >
           {row.statusResult}
         </span>

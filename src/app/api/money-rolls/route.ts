@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const moneyRoles = await prisma.moneyRole.findMany({
+    const moneyRolls = await prisma.moneyRole.findMany({
       where: {
         userId,
         active: true,
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       },
     });
 
-    return NextResponse.json(moneyRoles);
+    return NextResponse.json(moneyRolls);
   } catch (error) {
     console.error("Error fetching money rolls:", error);
     return NextResponse.json(

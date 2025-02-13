@@ -2,11 +2,11 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
-import { MoneyRolesTable } from "@/components/money-rolls/money-rolls-table";
+import { MoneyRollsTable } from "@/components/money-rolls/money-rolls-table";
 
 const prisma = new PrismaClient();
 
-export default async function MoneyRolesPage() {
+export default async function MoneyRollsPage() {
   const supabase = createServerComponentClient({ cookies });
 
   const {
@@ -43,18 +43,18 @@ export default async function MoneyRolesPage() {
     organizationId: user.organizationId,
   };
 
-  const serializedMoneyRoles = user.moneyRoles.map((role) => ({
-    id: role.id,
-    name: role.name,
-    userId: role.userId,
-    createdAt: role.createdAt.toISOString(),
-    updatedAt: role.updatedAt.toISOString(),
-    active: role.active,
+  const serializedMoneyRolls = user.moneyRoles.map((roll) => ({
+    id: roll.id,
+    name: roll.name,
+    userId: roll.userId,
+    createdAt: roll.createdAt.toISOString(),
+    updatedAt: roll.updatedAt.toISOString(),
+    active: roll.active,
   }));
 
   return (
     <div className="space-y-4">
-      <MoneyRolesTable moneyRoles={serializedMoneyRoles} user={serializedUser} />
+      <MoneyRollsTable moneyRolls={serializedMoneyRolls} user={serializedUser} />
     </div>
   );
 } 

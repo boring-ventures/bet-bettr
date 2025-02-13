@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { DataTable } from "@/components/table/data-table";
 import { DetailsDialog } from "@/components/table/details-dialog";
-import { MoneyRoleForm } from "./money-roll-form";
+import { MoneyRollForm } from "./money-roll-form";
 import type { Column } from "@/components/table/types";
 
-interface MoneyRole extends Record<string, unknown> {
+interface MoneyRoll extends Record<string, unknown> {
   id: string;
   name: string;
   userId: string;
@@ -14,8 +14,8 @@ interface MoneyRole extends Record<string, unknown> {
   active: boolean;
 }
 
-interface MoneyRolesTableProps {
-  moneyRoles: MoneyRole[];
+interface MoneyRollsTableProps {
+  moneyRolls: MoneyRoll[];
   user: {
     id: string;
     email: string;
@@ -24,12 +24,12 @@ interface MoneyRolesTableProps {
   };
 }
 
-export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
-  const [selectedRole, setSelectedRole] = useState<MoneyRole | null>(null);
+export function MoneyRollsTable({ moneyRolls, user }: MoneyRollsTableProps) {
+  const [selectedRoll, setSelectedRoll] = useState<MoneyRoll | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
-  const columns: Column<MoneyRole>[] = [
+  const columns: Column<MoneyRoll>[] = [
     {
       id: "name",
       header: "Name",
@@ -50,14 +50,14 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
       <DataTable
         title="Money Rolls"
         description="Manage your money rolls"
-        data={moneyRoles}
+        data={moneyRolls}
         columns={columns}
         searchable
         searchField="name"
         defaultSort={{ field: "createdAt", direction: "desc" }}
         onAdd={() => setIsAddDialogOpen(true)}
-        onEdit={(role) => {
-          setSelectedRole(role as MoneyRole);
+        onEdit={(roll) => {
+          setSelectedRoll(roll as MoneyRoll);
           setIsEditDialogOpen(true);
         }}
       />
@@ -65,12 +65,12 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
       <DetailsDialog
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        data={selectedRole}
+        data={selectedRoll}
         title="Edit Money Roll"
-        renderDetails={(role) => (
-          <MoneyRoleForm
+        renderDetails={(roll) => (
+          <MoneyRollForm
             user={user}
-            moneyRole={role}
+            moneyRoll={roll}
             onClose={() => setIsEditDialogOpen(false)}
           />
         )}
@@ -82,7 +82,7 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
         data={{}}
         title="Add New Money Roll"
         renderDetails={() => (
-          <MoneyRoleForm user={user} onClose={() => setIsAddDialogOpen(false)} />
+          <MoneyRollForm user={user} onClose={() => setIsAddDialogOpen(false)} />
         )}
       />
     </>

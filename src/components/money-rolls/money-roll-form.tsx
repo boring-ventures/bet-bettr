@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 
-const moneyRoleSchema = z.object({
+const moneyRollSchema = z.object({
   name: z.string().min(1, "Name is required"),
   id: z.string().optional(),
   createdAt: z.string().optional(),
@@ -19,28 +19,28 @@ const moneyRoleSchema = z.object({
   userId: z.string().optional(),
 });
 
-type MoneyRoleFormData = z.infer<typeof moneyRoleSchema>;
+type MoneyRollFormData = z.infer<typeof moneyRollSchema>;
 
-interface MoneyRoleFormProps {
+interface MoneyRollFormProps {
   user: {
     id: string;
     email: string;
     name: string;
     organizationId: string;
   };
-  moneyRole?: MoneyRoleFormData & { id: string };
+  moneyRoll?: MoneyRollFormData & { id: string };
   onClose: () => void;
 }
 
-export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) {
+export function MoneyRollForm({ user, moneyRoll, onClose }: MoneyRollFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<MoneyRoleFormData>({
-    resolver: zodResolver(moneyRoleSchema),
-    defaultValues: moneyRole || {
+  } = useForm<MoneyRollFormData>({
+    resolver: zodResolver(moneyRollSchema),
+    defaultValues: moneyRoll || {
       name: "",
     },
   });
@@ -49,50 +49,50 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const createMoneyRole = useMutation({
-    mutationFn: async (data: MoneyRoleFormData) => {
-      const newRole = {
-        id: moneyRole?.id || uuidv4(),
+  const createMoneyRoll = useMutation({
+    mutationFn: async (data: MoneyRollFormData) => {
+      const newRoll = {
+        id: moneyRoll?.id || uuidv4(),
         ...data,
         userId: user.id,
-        createdAt: moneyRole?.createdAt || new Date().toISOString(),
+        createdAt: moneyRoll?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         active: true,
       };
 
       const response = await fetch("/api/money-rolls", {
-        method: moneyRole ? "PUT" : "POST",
+        method: moneyRoll ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newRole),
+        body: JSON.stringify(newRoll),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to ${moneyRole ? "update" : "create"} money roll`);
+        throw new Error(`Failed to ${moneyRoll ? "update" : "create"} money roll`);
       }
 
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["moneyRoles", user.id] });
-      toast({ title: `Money roll ${moneyRole ? "updated" : "created"} successfully` });
+      queryClient.invalidateQueries({ queryKey: ["moneyRolls", user.id] });
+      toast({ title: `Money roll ${moneyRoll ? "updated" : "created"} successfully` });
       reset();
       onClose();
     },
     onError: (error: Error) => {
       toast({
-        title: `Error ${moneyRole ? "updating" : "creating"} money roll`,
+        title: `Error ${moneyRoll ? "updating" : "creating"} money roll`,
         description: error.message,
         variant: "destructive",
       });
     },
   });
 
-  const onSubmit = async (data: MoneyRoleFormData) => {
+  const onSubmit = async (data: MoneyRollFormData) => {
     try {
       setLoading(true);
-      await createMoneyRole.mutateAsync(data);
+      await createMoneyRoll.mutateAsync(data);
     } catch (error) {
       console.error("Error submitting money roll:", error);
     } finally {
@@ -110,7 +110,7 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
 
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : moneyRole ? "Update Roll" : "Add Roll"}
+          {loading ? "Saving..." : moneyRoll ? "Update Roll" : "Add Roll"}
         </Button>
       </div>
     </form>

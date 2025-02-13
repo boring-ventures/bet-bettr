@@ -61,9 +61,7 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
 
       const response = await fetch("/api/bets", {
         method: bet ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newBet),
       });
 
@@ -75,6 +73,7 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bets"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
       toast({ title: `Bet ${bet ? "updated" : "created"} successfully` });
       reset();
       onClose();

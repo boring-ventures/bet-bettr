@@ -75,7 +75,7 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["moneyRolls"] });
+      queryClient.invalidateQueries({ queryKey: ["moneyRoles", user.id] });
       toast({ title: `Money roll ${moneyRole ? "updated" : "created"} successfully` });
       reset();
       onClose();

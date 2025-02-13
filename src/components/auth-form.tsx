@@ -60,7 +60,7 @@ export function AuthForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `https://bet-bettr.vercel.app/auth/callback`,
         },
       });
 

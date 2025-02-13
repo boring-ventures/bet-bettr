@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { v4 as uuidv4 } from "uuid"
 import { betSchema, type BetFormData } from "@/lib/schemas"
 import { Button } from "@/components/ui/button"
@@ -57,6 +57,7 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
         createdAt: bet?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         active: true,
+        moneyRollId: data.moneyRollId === "none" ? null : data.moneyRollId,
       };
 
       const response = await fetch("/api/bets", {
@@ -84,6 +85,16 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
         description: error.message,
         variant: "destructive",
       });
+    },
+  });
+
+  // Add query for money rolls
+  const { data: moneyRolls } = useQuery({
+    queryKey: ["moneyRolls", user.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/money-rolls?userId=${user.id}`);
+      if (!response.ok) throw new Error("Failed to fetch money rolls");
+      return response.json();
     },
   });
 
@@ -143,6 +154,27 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
         {...register("stake", { valueAsNumber: true })}
       />
       {errors.stake && <p className="text-red-500">{errors.stake.message}</p>}
+
+      <Controller
+        name="moneyRollId"
+        control={control}
+        render={({ field }) => (
+          <Select onValueChange={field.onChange} value={field.value || undefined}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select money roll" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No money roll</SelectItem>
+              {moneyRolls?.map((roll: MoneyRoll) => (
+                <SelectItem key={roll.id} value={roll.id}>
+                  {roll.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      />
+      {errors.moneyRollId && <p className="text-red-500">{errors.moneyRollId.message}</p>}
 
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>

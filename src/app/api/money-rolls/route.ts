@@ -22,6 +22,8 @@ export async function GET(request: Request) {
       },
     });
 
+    console.log(moneyRolls);
+
     return NextResponse.json(moneyRolls);
   } catch (error) {
     console.error("Error fetching money rolls:", error);

@@ -5,6 +5,7 @@ import { DataTable } from "@/components/table/data-table";
 import { DetailsDialog } from "@/components/table/details-dialog";
 import { BetForm } from "./bet-form";
 import type { Column } from "@/components/table/types";
+import { useQuery } from "@tanstack/react-query";
 
 interface Bet extends Record<string, unknown> {
   id: string;
@@ -18,6 +19,12 @@ interface Bet extends Record<string, unknown> {
   createdAt: string;
   userId: string;
   moneyRollId?: string;
+}
+
+interface MoneyRoll {
+  id: string;
+  name: string;
+  userId: string;
 }
 
 interface BetsTableProps {
@@ -34,6 +41,23 @@ export function BetsTable({ bets, user }: BetsTableProps) {
   const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  // Add query for money rolls to display names
+  const { data: moneyRolls, isLoading } = useQuery({
+    queryKey: ["moneyRolls", user.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/money-rolls?userId=${user.id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch money rolls");
+      }
+      const data = await response.json();
+      console.log("Fetched money rolls:", data); // Debug log
+      return data;
+    },
+    enabled: !!user.id, // Only run query if we have a user ID
+    initialData: [], // Provide empty array as initial data
+  });
+
 
   const columns: Column<Bet>[] = [
     {
@@ -85,6 +109,24 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       id: "house",
       header: "House",
       accessorKey: "bettingHouse",
+      sortable: true,
+    },
+    {
+      id: "moneyRoll",
+      header: "Money Roll",
+      accessorKey: "moneyRollId",
+      cell: ({ row }) => {
+        if (row?.original) return "—";
+        const bet = row as unknown as Bet;
+        if (isLoading) return "Loading...";
+        if (!moneyRolls || !bet.moneyRollId) return "—";
+
+        const roll = moneyRolls.find(
+          (r: MoneyRoll) => r.id === bet.moneyRollId
+        );
+
+        return roll?.name || "—";
+      },
       sortable: true,
     },
   ];

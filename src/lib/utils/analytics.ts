@@ -6,6 +6,7 @@ export interface FilterOptions {
   sport: string
   market: string
   statusResult: string
+  moneyRoll: string
 }
 
 export function filterBets(bets: Bet[], filters: FilterOptions): Bet[] {
@@ -26,7 +27,11 @@ export function filterBets(bets: Bet[], filters: FilterOptions): Bet[] {
       filters.statusResult === "All Results" ||
       bet.statusResult.toLowerCase() === filters.statusResult.toLowerCase()
 
-    return dateInRange && sportMatches && marketMatches && statusMatches
+    const moneyRollMatches =
+      filters.moneyRoll === "All Money Rolls" ||
+      bet.moneyRollId === filters.moneyRoll
+
+    return dateInRange && sportMatches && marketMatches && statusMatches && moneyRollMatches
   })
 }
 

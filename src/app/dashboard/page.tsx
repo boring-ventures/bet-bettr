@@ -46,6 +46,15 @@ import { Button } from "@/components/ui/button";
 
 const COLORS = ["#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"];
 
+// Update FilterOptions type to include moneyRoll
+type FilterOptions = {
+  dateRange: { from: Date; to: Date } | undefined;
+  sport: string;
+  market: string;
+  statusResult: string;
+  moneyRoll: string;
+};
+
 export default function DashboardPage() {
   const [filters, setFilters] = useState<FilterOptions>({
     dateRange: {
@@ -55,6 +64,7 @@ export default function DashboardPage() {
     sport: "All Sports",
     market: "All Markets",
     statusResult: "All Results",
+    moneyRoll: "All Money Rolls",
   });
 
   const { data: analyticsData, isLoading } = useQuery({
@@ -88,7 +98,7 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold">Sports Betting Analytics Dashboard</h1>
 
       <div className="flex flex-col gap-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <DatePickerWithRange
             value={filters.dateRange}
             onChange={(newDateRange) => {
@@ -138,6 +148,24 @@ export default function DashboardPage() {
               ))}
             </SelectContent>
           </Select>
+          <Select
+            value={filters.moneyRoll}
+            onValueChange={(value) =>
+              setFilters((prev) => ({ ...prev, moneyRoll: value }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="All Money Rolls" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All Money Rolls">All Money Rolls</SelectItem>
+              {analyticsData?.moneyRolls?.map((roll: any) => (
+                <SelectItem key={roll.id} value={roll.id}>
+                  {roll.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Button
           variant="outline"
@@ -151,6 +179,7 @@ export default function DashboardPage() {
               sport: "All Sports",
               market: "All Markets",
               statusResult: "All Results",
+              moneyRoll: "All Money Rolls",
             })
           }
           className="w-fit"
@@ -290,6 +319,7 @@ export default function DashboardPage() {
                   <TableHead>Odds</TableHead>
                   <TableHead>Stake</TableHead>
                   <TableHead>Result</TableHead>
+                  <TableHead>Money Roll</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -308,6 +338,7 @@ export default function DashboardPage() {
                         : Number(bet.stake).toFixed(2)}
                     </TableCell>
                     <TableCell>{bet.statusResult}</TableCell>
+                    <TableCell>{bet.moneyRollName || "—"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

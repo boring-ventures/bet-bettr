@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
 import { Controller } from "react-hook-form"
+import { MoneyRoll } from "@prisma/client"
 
 interface BetFormProps {
   user: {
@@ -49,6 +50,7 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
       type: "",
       sport: "",
       stake: 0,
+      
     },
   });
 
@@ -63,7 +65,7 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
         ...data,
         userId: user.id,
         statusResult: bet?.statusResult || "Pending",
-        createdAt: bet?.createdAt || new Date().toISOString(),
+        createdAt:new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         active: true,
         moneyRollId: data.moneyRollId === "none" ? null : data.moneyRollId,

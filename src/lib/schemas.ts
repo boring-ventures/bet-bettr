@@ -7,7 +7,7 @@ export const betSchema = z.object({
   type: z.string().min(1, "Type is required"),
   sport: z.string().min(1, "Sport is required"),
   stake: z.number().min(1, "Stake must be greater than 0"),
-  statusResult: z.enum(["Pending", "Win", "Lose"]).default("Pending"),
+  statusResult: z.enum(["Pending", "Win", "Lose", "Push"]).default("Pending"),
   moneyRollId: z.string().uuid().optional(),
 })
 

@@ -33,7 +33,7 @@ export function AddBetButton({ user }: AddBetButtonProps) {
         <DialogHeader>
           <DialogTitle>Add New Bet</DialogTitle>
         </DialogHeader>
-        <BetForm user={user} />
+        <BetForm user={user} onClose={() => {}} />
       </DialogContent>
     </Dialog>
   )

@@ -88,15 +88,7 @@ export function BetsTable({ bets, user }: BetsTableProps) {
 
     // Invalidate and refetch queries
     await queryClient.invalidateQueries({ queryKey: ["analytics"] });
-    
-    // Update the local state
-    const updatedBet = await response.json();
-    const updatedBets = bets.map((bet) =>
-      bet.id === updatedBet.id ? updatedBet : bet
-    );
-    
-    // You might need to implement a way to update the parent component's state here
-    // This could be through a callback prop or by managing the state in a higher level
+   
   };
 
   const columns: Column<Bet>[] = [

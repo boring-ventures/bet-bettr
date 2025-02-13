@@ -20,7 +20,17 @@ interface BetFormProps {
     name: string;
     organizationId: string;
   };
-  bet?: BetFormData & { id: string }; // For editing existing bets
+  bet?: {
+    id: string;
+    odds: number;
+    market: string;
+    bettingHouse: string;
+    type: string;
+    sport: string;
+    stake: number;
+    statusResult: "Pending" | "Win" | "Lose" | "Push";
+    moneyRollId?: string;
+  };
   onClose: () => void;
 }
 

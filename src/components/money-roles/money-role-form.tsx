@@ -54,7 +54,7 @@ export function MoneyRoleForm({
         id: moneyRole?.id || uuidv4(),
         ...data,
         userId: user.id,
-        createdAt: moneyRole?.createdAt || new Date().toISOString(),
+        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         active: true,
       };

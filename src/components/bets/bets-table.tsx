@@ -128,15 +128,11 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       header: "Money Roll",
       accessorKey: "moneyRollId",
       cell: ({ row }) => {
-        if (row?.original) return "—";
-        const bet = row as unknown as Bet;
         if (isLoading) return "Loading...";
-        if (!moneyRolls || !bet.moneyRollId) return "—";
-
-        const roll = moneyRolls.find(
-          (r: MoneyRoll) => r.id === bet.moneyRollId
-        );
-
+        const bet = row.original as Bet;
+        if (!moneyRolls || !bet?.moneyRollId) return "—";
+        
+        const roll = moneyRolls.find((r: MoneyRoll) => r.id === bet.moneyRollId);
         return roll?.name || "—";
       },
       sortable: true,

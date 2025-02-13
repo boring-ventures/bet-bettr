@@ -76,6 +76,14 @@ export default function DashboardPage() {
     },
   });
 
+  const { data: moneyRolls } = useQuery({
+    queryKey: ["moneyRolls", "current"],
+    queryFn: async () => {
+      const response = await fetch("/api/money-rolls?userId=current");
+      return response.json();
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -338,7 +346,14 @@ export default function DashboardPage() {
                         : Number(bet.stake).toFixed(2)}
                     </TableCell>
                     <TableCell>{bet.statusResult}</TableCell>
-                    <TableCell>{bet.moneyRollName || "—"}</TableCell>
+                    <TableCell>
+                      {(() => {
+                        const roll = moneyRolls?.find(
+                          (r: MoneyRoll) => r.id === bet.moneyRollId
+                        );
+                        return roll?.name || "—";
+                      })()}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

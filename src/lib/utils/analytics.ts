@@ -1,5 +1,10 @@
-import { type Bet } from "@prisma/client"
+import { type Bet as PrismaBet } from "@prisma/client"
 import { DateRange } from "react-day-picker"
+
+// Extend the Prisma Bet type to include optional moneyRollName
+export interface ExtendedBet extends PrismaBet {
+  moneyRollName?: string;
+}
 
 export interface FilterOptions {
   dateRange: DateRange | undefined
@@ -9,7 +14,7 @@ export interface FilterOptions {
   moneyRoll: string
 }
 
-export function filterBets(bets: Bet[], filters: FilterOptions): Bet[] {
+export function filterBets(bets: ExtendedBet[], filters: FilterOptions): ExtendedBet[] {
   return bets.filter((bet) => {
     const dateInRange =
       !filters.dateRange?.from ||
@@ -35,27 +40,27 @@ export function filterBets(bets: Bet[], filters: FilterOptions): Bet[] {
   })
 }
 
-export function calculateTotalBets(bets: Bet[]): number {
+export function calculateTotalBets(bets: ExtendedBet[]): number {
   return bets.length
 }
 
-export function calculateWinRate(bets: Bet[]): number {
+export function calculateWinRate(bets: ExtendedBet[]): number {
   const completedBets = bets.filter((bet) => bet.statusResult !== "Pending")
   const wins = completedBets.filter((bet) => bet.statusResult === "Win")
   return completedBets.length ? (wins.length / completedBets.length) * 100 : 0
 }
 
-export function calculateTotalStake(bets: Bet[]): number {
+export function calculateTotalStake(bets: ExtendedBet[]): number {
   return bets.reduce((total, bet) => total + Number(bet.stake), 0)
 }
 
-export function calculateAverageOdds(bets: Bet[]): number {
+export function calculateAverageOdds(bets: ExtendedBet[]): number {
   return bets.length
     ? bets.reduce((total, bet) => total + Number(bet.odds), 0) / bets.length
     : 0
 }
 
-export function calculateProfitOverTime(bets: Bet[]): any[] {
+export function calculateProfitOverTime(bets: ExtendedBet[]): { date: string; profit: number }[] {
   const profitByDate = new Map<string, number>()
   
   bets.forEach((bet) => {
@@ -78,7 +83,7 @@ export function calculateProfitOverTime(bets: Bet[]): any[] {
   }))
 }
 
-export function calculateBetDistribution(bets: Bet[]): any[] {
+export function calculateBetDistribution(bets: ExtendedBet[]): { name: string; value: number }[] {
   const distribution = new Map<string, number>()
   
   bets.forEach((bet) => {
@@ -94,7 +99,7 @@ export function calculateBetDistribution(bets: Bet[]): any[] {
   }))
 }
 
-export function calculateWinRateByType(bets: Bet[]): any[] {
+export function calculateWinRateByType(bets: ExtendedBet[]): { name: string; winRate: number }[] {
   const winRateByType = new Map<string, { total: number; wins: number }>();
   
   bets.forEach((bet) => {
@@ -112,7 +117,7 @@ export function calculateWinRateByType(bets: Bet[]): any[] {
   }));
 }
 
-export function calculateMarketStats(bets: Bet[]): any[] {
+export function calculateMarketStats(bets: ExtendedBet[]): { market: string; avgOdds: number }[] {
   const marketStats = new Map<string, { total: number; oddsSum: number }>();
   
   bets.forEach((bet) => {

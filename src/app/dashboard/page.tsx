@@ -48,7 +48,7 @@ const COLORS = ["#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"];
 
 // Update FilterOptions type to include moneyRoll
 type FilterOptions = {
-  dateRange: { from: Date; to: Date } | undefined;
+  dateRange: { from: Date | undefined; to: Date | undefined } | undefined;
   sport: string;
   market: string;
   statusResult: string;
@@ -76,13 +76,7 @@ export default function DashboardPage() {
     },
   });
 
-  const { data: moneyRolls } = useQuery({
-    queryKey: ["moneyRolls", "current"],
-    queryFn: async () => {
-      const response = await fetch("/api/money-rolls?userId=current");
-      return response.json();
-    },
-  });
+
 
   if (isLoading) {
     return (
@@ -111,12 +105,15 @@ export default function DashboardPage() {
             value={filters.dateRange}
             onChange={(newDateRange) => {
               if (newDateRange && "from" in newDateRange) {
-                setFilters((prev) => ({
+                setFilters((prev: FilterOptions) => ({
                   ...prev,
-                  dateRange: newDateRange,
+                  dateRange: newDateRange as { from: Date; to: Date },
                 }));
               } else if (newDateRange === undefined) {
-                setFilters((prev) => ({ ...prev, dateRange: undefined }));
+                setFilters((prev: FilterOptions) => ({
+                  ...prev,
+                  dateRange: undefined,
+                }));
               }
             }}
           />
@@ -347,12 +344,7 @@ export default function DashboardPage() {
                     </TableCell>
                     <TableCell>{bet.statusResult}</TableCell>
                     <TableCell>
-                      {(() => {
-                        const roll = moneyRolls?.find(
-                          (r: MoneyRoll) => r.id === bet.moneyRollId
-                        );
-                        return roll?.name || "—";
-                      })()}
+                      {bet.moneyRollName || "—"}
                     </TableCell>
                   </TableRow>
                 ))}

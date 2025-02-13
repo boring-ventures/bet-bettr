@@ -27,11 +27,11 @@ model User {
   updatedAt      DateTime     @updatedAt
   active         Boolean      @default(true)
   bets           Bet[]
-  moneyRoles     MoneyRole[]
+  moneyRolls     MoneyRoll[]
   organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
-model MoneyRole {
+model MoneyRoll {
   id        String   @id @default(uuid())
   name      String
   userId    String
@@ -52,10 +52,10 @@ model Bet {
   stake        Decimal
   statusResult String     @default("Pending")
   userId       String
-  moneyRoleId  String?
+  moneyRollId  String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   active       Boolean    @default(true)
-  moneyRole    MoneyRole? @relation(fields: [moneyRoleId], references: [id])
+  moneyRoll    MoneyRoll? @relation(fields: [moneyRollId], references: [id])
   user         User       @relation(fields: [userId], references: [id])
 }

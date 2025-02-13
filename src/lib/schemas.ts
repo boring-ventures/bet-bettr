@@ -8,7 +8,7 @@ export const betSchema = z.object({
   sport: z.string().min(1, "Sport is required"),
   stake: z.number().min(1, "Stake must be greater than 0"),
   statusResult: z.enum(["Pending", "Win", "Lose"]).default("Pending"),
-  moneyRoleId: z.string().uuid().optional(),
+  moneyRollId: z.string().uuid().optional(),
 })
 
 export type BetFormData = z.infer<typeof betSchema>

@@ -17,7 +17,7 @@ interface Bet extends Record<string, unknown> {
   statusResult: "Pending" | "Win" | "Lose";
   createdAt: string;
   userId: string;
-  moneyRoleId?: string;
+  moneyRollId?: string;
 }
 
 interface BetsTableProps {

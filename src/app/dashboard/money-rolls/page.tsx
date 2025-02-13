@@ -21,7 +21,7 @@ export default async function MoneyRollsPage() {
     where: { email: session.user.email! },
     include: {
       organization: true,
-      moneyRoles: {
+      moneyRolls: {
         orderBy: {
           createdAt: "desc",
         },
@@ -43,7 +43,7 @@ export default async function MoneyRollsPage() {
     organizationId: user.organizationId,
   };
 
-  const serializedMoneyRolls = user.moneyRoles.map((roll) => ({
+  const serializedMoneyRolls = user.moneyRolls.map((roll) => ({
     id: roll.id,
     name: roll.name,
     userId: roll.userId,

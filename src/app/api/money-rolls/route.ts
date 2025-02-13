@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const moneyRolls = await prisma.moneyRole.findMany({
+    const moneyRolls = await prisma.moneyRoll.findMany({
       where: {
         userId,
         active: true,
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    const newRole = await prisma.moneyRole.create({ data });
+    const newRole = await prisma.moneyRoll.create({ data });
     return NextResponse.json(newRole);
   } catch (error) {
     console.error("Error creating money roll:", error);
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const data = await request.json();
-    const updatedRole = await prisma.moneyRole.update({
+    const updatedRole = await prisma.moneyRoll.update({
       where: { id: data.id },
       data,
     });

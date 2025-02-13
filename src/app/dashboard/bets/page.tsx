@@ -55,7 +55,7 @@ export default async function BetsPage() {
     stake: Number(bet.stake),
     statusResult: bet.statusResult as "Pending" | "Win" | "Lose",
     userId: bet.userId,
-    moneyRoleId: bet.moneyRoleId || undefined,
+    moneyRollId: bet.moneyRollId || undefined,
     createdAt: bet.createdAt.toISOString(),
     updatedAt: bet.updatedAt.toISOString(),
     active: bet.active,

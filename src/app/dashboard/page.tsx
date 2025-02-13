@@ -30,7 +30,6 @@ import {
   calculateAverageOdds,
   calculateProfitOverTime,
   calculateBetDistribution,
-  type FilterOptions,
 } from "@/lib/utils/analytics";
 import {
   Area,
@@ -43,6 +42,7 @@ import {
   Cell,
 } from "recharts";
 import { Button } from "@/components/ui/button";
+import { MoneyRoll } from "@prisma/client";
 
 const COLORS = ["#10B981", "#3B82F6", "#F59E0B", "#EF4444", "#8B5CF6"];
 
@@ -159,7 +159,7 @@ export default function DashboardPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All Money Rolls">All Money Rolls</SelectItem>
-              {analyticsData?.moneyRolls?.map((roll: any) => (
+              {analyticsData?.moneyRolls?.map((roll: MoneyRoll) => (
                 <SelectItem key={roll.id} value={roll.id}>
                   {roll.name}
                 </SelectItem>

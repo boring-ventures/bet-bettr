@@ -58,7 +58,6 @@ export function BetsTable({ bets, user }: BetsTableProps) {
     initialData: [], // Provide empty array as initial data
   });
 
-
   const columns: Column<Bet>[] = [
     {
       id: "date",
@@ -103,6 +102,19 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       id: "status",
       header: "Status",
       accessorKey: "statusResult",
+      cell: ({ row }) => (
+        <span
+          className={
+            row.statusResult === "Win"
+              ? "text-green-500"
+              : row.statusResult === "Lose"
+              ? "text-red-500"
+              : "text-yellow-500"
+          }
+        >
+          {row.statusResult}
+        </span>
+      ),
       sortable: true,
     },
     {
@@ -156,7 +168,7 @@ export function BetsTable({ bets, user }: BetsTableProps) {
         renderDetails={(bet) => (
           <BetForm
             user={user}
-            bet={bet}
+            bet={bet as Bet}
             onClose={() => setIsEditDialogOpen(false)}
           />
         )}

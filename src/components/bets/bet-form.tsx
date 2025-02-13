@@ -111,74 +111,144 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <Input
-        type="number"
-        step="0.01"
-        placeholder="Odds"
-        {...register("odds", { valueAsNumber: true })}
-      />
-      {errors.odds && <p className="text-red-500">{errors.odds.message}</p>}
+      <div className="space-y-2">
+        <label htmlFor="odds" className="text-sm font-medium">
+          Odds
+        </label>
+        <Input
+          id="odds"
+          type="number"
+          step="0.01"
+          placeholder="Enter odds"
+          {...register("odds", { valueAsNumber: true })}
+        />
+        {errors.odds && <p className="text-red-500">{errors.odds.message}</p>}
+      </div>
 
-      <Input placeholder="Market" {...register("market")} />
-      {errors.market && <p className="text-red-500">{errors.market.message}</p>}
+      <div className="space-y-2">
+        <label htmlFor="market" className="text-sm font-medium">
+          Market
+        </label>
+        <Input
+          id="market"
+          placeholder="Enter market"
+          {...register("market")}
+        />
+        {errors.market && <p className="text-red-500">{errors.market.message}</p>}
+      </div>
 
-      <Input placeholder="Betting House" {...register("bettingHouse")} />
-      {errors.bettingHouse && (
-        <p className="text-red-500">{errors.bettingHouse.message}</p>
-      )}
+      <div className="space-y-2">
+        <label htmlFor="bettingHouse" className="text-sm font-medium">
+          Betting House
+        </label>
+        <Input
+          id="bettingHouse"
+          placeholder="Enter betting house"
+          {...register("bettingHouse")}
+        />
+        {errors.bettingHouse && <p className="text-red-500">{errors.bettingHouse.message}</p>}
+      </div>
 
-      <Controller
-        name="type"
-        control={control}
-        render={({ field }) => (
-          <Select onValueChange={field.onChange} value={field.value}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select bet type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Simple">Simple</SelectItem>
-              <SelectItem value="Combined">Combined</SelectItem>
-            </SelectContent>
-          </Select>
-        )}
-      />
-      {errors.type && <p className="text-red-500">{errors.type.message}</p>}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Type
+        </label>
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select bet type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Simple">Simple</SelectItem>
+                <SelectItem value="Combined">Combined</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.type && <p className="text-red-500">{errors.type.message}</p>}
+      </div>
 
-      <Input placeholder="Sport" {...register("sport")} />
-      {errors.sport && <p className="text-red-500">{errors.sport.message}</p>}
+      <div className="space-y-2">
+        <label htmlFor="sport" className="text-sm font-medium">
+          Sport
+        </label>
+        <Input
+          id="sport"
+          placeholder="Enter sport"
+          {...register("sport")}
+        />
+        {errors.sport && <p className="text-red-500">{errors.sport.message}</p>}
+      </div>
 
-      <Input
-        type="number"
-        step="0.01"
-        placeholder="Stake"
-        {...register("stake", { valueAsNumber: true })}
-      />
-      {errors.stake && <p className="text-red-500">{errors.stake.message}</p>}
+      <div className="space-y-2">
+        <label htmlFor="stake" className="text-sm font-medium">
+          Stake
+        </label>
+        <Input
+          id="stake"
+          type="number"
+          step="0.01"
+          placeholder="Enter stake"
+          {...register("stake", { valueAsNumber: true })}
+        />
+        {errors.stake && <p className="text-red-500">{errors.stake.message}</p>}
+      </div>
 
-      <Controller
-        name="moneyRollId"
-        control={control}
-        render={({ field }) => (
-          <Select onValueChange={field.onChange} value={field.value || undefined}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select money roll" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">No money roll</SelectItem>
-              {moneyRolls?.map((roll: MoneyRoll) => (
-                <SelectItem key={roll.id} value={roll.id}>
-                  {roll.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-      />
-      {errors.moneyRollId && <p className="text-red-500">{errors.moneyRollId.message}</p>}
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Money Roll
+        </label>
+        <Controller
+          name="moneyRollId"
+          control={control}
+          render={({ field }) => (
+            <Select onValueChange={field.onChange} value={field.value || undefined}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select money roll" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">No money roll</SelectItem>
+                {moneyRolls?.map((roll: MoneyRoll) => (
+                  <SelectItem key={roll.id} value={roll.id}>
+                    {roll.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.moneyRollId && <p className="text-red-500">{errors.moneyRollId.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Status
+        </label>
+        <Controller
+          name="statusResult"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="Win">Win</SelectItem>
+                <SelectItem value="Lose">Lose</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.statusResult && <p className="text-red-500">{errors.statusResult.message}</p>}
+      </div>
 
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>
-          {loading ? "Adding..." : "Add Bet"}
+          {loading ? "Adding..." : bet ? "Update Bet" : "Add Bet"}
         </Button>
       </div>
     </form>

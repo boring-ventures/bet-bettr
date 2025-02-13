@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/nav/app-sidebar";
 import { PrismaClient } from "@prisma/client";
 import { SidebarProvider } from "@/components/ui/sidebar";
+
 const prisma = new PrismaClient();
 
 export default async function DashboardLayout({
@@ -11,30 +12,34 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerComponentClient({ cookies });
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const cookieStore = cookies();
+  const supabase = createServerComponentClient({ cookies: () => cookieStore });
 
-  if (!session) {
+  // Use getUser instead of getSession for better security
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
     redirect("/login");
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email! },
+  const dbUser = await prisma.user.findUnique({
+    where: { email: user.email! },
     include: {
       organization: true,
     },
   });
 
-  if (!user) {
+  if (!dbUser) {
     redirect("/login");
   }
 
   return (
     <div className="flex min-h-screen bg-background">
       <SidebarProvider>
-        <AppSidebar user={user}>{children}</AppSidebar>
+        <AppSidebar user={dbUser}>{children}</AppSidebar>
       </SidebarProvider>
     </div>
   );

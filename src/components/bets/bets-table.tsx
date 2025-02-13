@@ -5,7 +5,8 @@ import { DataTable } from "@/components/table/data-table";
 import { DetailsDialog } from "@/components/table/details-dialog";
 import { BetForm } from "./bet-form";
 import type { Column } from "@/components/table/types";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { BetStatusModal } from "./bet-status-modal";
 
 interface Bet extends Record<string, unknown> {
   id: string;
@@ -15,7 +16,7 @@ interface Bet extends Record<string, unknown> {
   type: string;
   sport: string;
   stake: number;
-  statusResult: "Pending" | "Win" | "Lose";
+  statusResult: "Pending" | "Win" | "Lose" | "Push";
   createdAt: string;
   userId: string;
   moneyRollId?: string;
@@ -41,6 +42,8 @@ export function BetsTable({ bets, user }: BetsTableProps) {
   const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   // Add query for money rolls to display names
   const { data: moneyRolls, isLoading } = useQuery({
@@ -57,6 +60,44 @@ export function BetsTable({ bets, user }: BetsTableProps) {
     enabled: !!user.id, // Only run query if we have a user ID
     initialData: [], // Provide empty array as initial data
   });
+
+  const handleStatusClick = (bet: Bet) => {
+    if (bet.statusResult === "Pending") {
+      setSelectedBet(bet);
+      setIsStatusModalOpen(true);
+    }
+  };
+
+  const handleStatusUpdate = async (status: "Win" | "Lose" | "Push") => {
+    if (!selectedBet) return;
+
+    const response = await fetch(`/api/bets`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: selectedBet.id,
+        statusResult: status,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update bet status");
+    }
+
+    // Invalidate and refetch queries
+    await queryClient.invalidateQueries({ queryKey: ["analytics"] });
+    
+    // Update the local state
+    const updatedBet = await response.json();
+    const updatedBets = bets.map((bet) =>
+      bet.id === updatedBet.id ? updatedBet : bet
+    );
+    
+    // You might need to implement a way to update the parent component's state here
+    // This could be through a callback prop or by managing the state in a higher level
+  };
 
   const columns: Column<Bet>[] = [
     {
@@ -104,13 +145,16 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       accessorKey: "statusResult",
       cell: ({ row }) => (
         <span
-          className={
+          className={`cursor-pointer ${
             row.statusResult === "Win"
               ? "text-green-500"
               : row.statusResult === "Lose"
               ? "text-red-500"
+              : row.statusResult === "Push"
+              ? "text-yellow-500"
               : "text-yellow-500"
-          }
+          }`}
+          onClick={() => handleStatusClick(row)}
         >
           {row.statusResult}
         </span>
@@ -128,11 +172,15 @@ export function BetsTable({ bets, user }: BetsTableProps) {
       header: "Money Roll",
       accessorKey: "moneyRollId",
       cell: ({ row }) => {
+        if (row?.original) return "—";
+        const bet = row as unknown as Bet;
         if (isLoading) return "Loading...";
-        const bet = row.original as Bet;
-        if (!moneyRolls || !bet?.moneyRollId) return "—";
-        
-        const roll = moneyRolls.find((r: MoneyRoll) => r.id === bet.moneyRollId);
+        if (!moneyRolls || !bet.moneyRollId) return "—";
+
+        const roll = moneyRolls.find(
+          (r: MoneyRoll) => r.id === bet.moneyRollId
+        );
+
         return roll?.name || "—";
       },
       sortable: true,
@@ -178,6 +226,13 @@ export function BetsTable({ bets, user }: BetsTableProps) {
         renderDetails={() => (
           <BetForm user={user} onClose={() => setIsAddDialogOpen(false)} />
         )}
+      />
+
+      <BetStatusModal
+        open={isStatusModalOpen}
+        onOpenChange={setIsStatusModalOpen}
+        bet={selectedBet}
+        onStatusUpdate={handleStatusUpdate}
       />
     </>
   );

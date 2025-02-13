@@ -223,29 +223,6 @@ export function BetForm({ user, bet, onClose }: BetFormProps) {
         {errors.moneyRollId && <p className="text-red-500">{errors.moneyRollId.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium">
-          Status
-        </label>
-        <Controller
-          name="statusResult"
-          control={control}
-          render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Pending">Pending</SelectItem>
-                <SelectItem value="Win">Win</SelectItem>
-                <SelectItem value="Lose">Lose</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.statusResult && <p className="text-red-500">{errors.statusResult.message}</p>}
-      </div>
-
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>
           {loading ? "Adding..." : bet ? "Update Bet" : "Add Bet"}

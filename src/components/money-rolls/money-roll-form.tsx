@@ -12,6 +12,11 @@ import { useToast } from "@/hooks/use-toast";
 
 const moneyRoleSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  id: z.string().optional(),
+  createdAt: z.string().optional(),
+  updatedAt: z.string().optional(),
+  active: z.boolean().optional(),
+  userId: z.string().optional(),
 });
 
 type MoneyRoleFormData = z.infer<typeof moneyRoleSchema>;
@@ -55,7 +60,7 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
         active: true,
       };
 
-      const response = await fetch("/api/money-roles", {
+      const response = await fetch("/api/money-rolls", {
         method: moneyRole ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,20 +69,20 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to ${moneyRole ? "update" : "create"} money role`);
+        throw new Error(`Failed to ${moneyRole ? "update" : "create"} money roll`);
       }
 
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["moneyRoles"] });
-      toast({ title: `Money role ${moneyRole ? "updated" : "created"} successfully` });
+      queryClient.invalidateQueries({ queryKey: ["moneyRolls"] });
+      toast({ title: `Money roll ${moneyRole ? "updated" : "created"} successfully` });
       reset();
       onClose();
     },
     onError: (error: Error) => {
       toast({
-        title: `Error ${moneyRole ? "updating" : "creating"} money role`,
+        title: `Error ${moneyRole ? "updating" : "creating"} money roll`,
         description: error.message,
         variant: "destructive",
       });
@@ -89,7 +94,7 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
       setLoading(true);
       await createMoneyRole.mutateAsync(data);
     } catch (error) {
-      console.error("Error submitting money role:", error);
+      console.error("Error submitting money roll:", error);
     } finally {
       setLoading(false);
     }
@@ -105,7 +110,7 @@ export function MoneyRoleForm({ user, moneyRole, onClose }: MoneyRoleFormProps) 
 
       <div className="flex justify-end gap-2">
         <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : moneyRole ? "Update Role" : "Add Role"}
+          {loading ? "Saving..." : moneyRole ? "Update Roll" : "Add Roll"}
         </Button>
       </div>
     </form>

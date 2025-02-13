@@ -2,7 +2,7 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { PrismaClient } from "@prisma/client";
-import { MoneyRolesTable } from "@/components/money-roles/money-roles-table";
+import { MoneyRolesTable } from "@/components/money-rolls/money-rolls-table";
 
 const prisma = new PrismaClient();
 

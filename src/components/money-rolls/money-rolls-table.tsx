@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { DataTable } from "@/components/table/data-table";
 import { DetailsDialog } from "@/components/table/details-dialog";
-import { MoneyRoleForm } from "./money-role-form";
+import { MoneyRoleForm } from "./money-roll-form";
 import type { Column } from "@/components/table/types";
 
 interface MoneyRole extends Record<string, unknown> {
@@ -48,8 +48,8 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
   return (
     <>
       <DataTable
-        title="Money Roles"
-        description="Manage your money roles"
+        title="Money Rolls"
+        description="Manage your money rolls"
         data={moneyRoles}
         columns={columns}
         searchable
@@ -66,7 +66,7 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
         open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
         data={selectedRole}
-        title="Edit Money Role"
+        title="Edit Money Roll"
         renderDetails={(role) => (
           <MoneyRoleForm
             user={user}
@@ -80,7 +80,7 @@ export function MoneyRolesTable({ moneyRoles, user }: MoneyRolesTableProps) {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         data={{}}
-        title="Add New Money Role"
+        title="Add New Money Roll"
         renderDetails={() => (
           <MoneyRoleForm user={user} onClose={() => setIsAddDialogOpen(false)} />
         )}

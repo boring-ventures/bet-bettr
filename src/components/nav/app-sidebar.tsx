@@ -61,8 +61,8 @@ const navItems: NavItem[] = [
     icon: History,
   },
   {
-    title: "Money Roles",
-    url: "/dashboard/money-roles",
+    title: "Money Rolls",
+    url: "/dashboard/money-rolls",
     icon: Wallet,
   },
 ];

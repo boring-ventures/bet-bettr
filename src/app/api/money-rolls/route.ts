@@ -24,9 +24,9 @@ export async function GET(request: Request) {
 
     return NextResponse.json(moneyRoles);
   } catch (error) {
-    console.error("Error fetching money roles:", error);
+    console.error("Error fetching money rolls:", error);
     return NextResponse.json(
-      { error: "Failed to fetch money roles" },
+      { error: "Failed to fetch money rolls" },
       { status: 500 }
     );
   }
@@ -38,9 +38,9 @@ export async function POST(request: Request) {
     const newRole = await prisma.moneyRole.create({ data });
     return NextResponse.json(newRole);
   } catch (error) {
-    console.error("Error creating money role:", error);
+    console.error("Error creating money roll:", error);
     return NextResponse.json(
-      { error: "Failed to create money role" },
+      { error: "Failed to create money roll" },
       { status: 500 }
     );
   }
@@ -55,9 +55,9 @@ export async function PUT(request: Request) {
     });
     return NextResponse.json(updatedRole);
   } catch (error) {
-    console.error("Error updating money role:", error);
+    console.error("Error updating money roll:", error);
     return NextResponse.json(
-      { error: "Failed to update money role" },
+      { error: "Failed to update money roll" },
       { status: 500 }
     );
   }
